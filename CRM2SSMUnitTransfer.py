@@ -145,6 +145,48 @@ def main(dfltVal):
     db = create_engine('mssql+pyodbc:///?odbc_connect=%s' % params, fast_executemany=True)
 
     str_sql = """
+    SELECT a.ProductID,
+       a.SAPProductID,
+       a.Project,
+       a.ProjectType,
+       a.UnitAmount AS TotalUnit,
+	   (
+	   SELECT COUNT(*)
+FROM [dbo].[ICON_EntForms_Transfer] TR
+    LEFT JOIN [dbo].[ICON_EntForms_Agreement] Arg
+        ON Arg.ContractNumber = TR.ContractNumber
+    LEFT JOIN [dbo].[ICON_EntForms_Products] P
+        ON P.ProductID = Arg.ProductID
+WHERE 1 = 1
+      AND TR.TransferDateApprove IS NOT NULL
+      AND P.RTPExcusive = '1'
+	  AND P.ProductID = a.ProductID
+	  )  AS TransferTotalUnit
+FROM
+(
+    SELECT ProductID,
+           Project,
+           P.ProjectType,
+           P.SAPProductID,
+           (
+               SELECT COUNT(*)
+               FROM dbo.ICON_EntForms_Unit
+               WHERE ProductID = P.ProductID
+                     AND ISNULL(AssetType, 0) <> 4
+                     AND ISNULL(AssetType, 0) <> 5
+           ) AS UnitAmount,
+           (
+               SELECT COUNT(*)
+               FROM dbo.ICON_EntForms_Booking
+               WHERE ProductID = P.ProductID
+                     AND CancelDate IS NULL
+           ) AS BookAmount
+    FROM dbo.ICON_EntForms_Products P
+    WHERE Producttype IN ( 'โครงการแนวราบ', 'โครงการแนวสูง' )
+          AND RTPExcusive = '1'
+) AS a
+WHERE a.UnitAmount <> 0
+ORDER BY a.ProductID;
     """
 
     # Setup Format File Name CSV
