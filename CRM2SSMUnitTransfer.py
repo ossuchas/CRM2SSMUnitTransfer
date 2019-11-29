@@ -187,9 +187,9 @@ if __name__ == '__main__':
     dfltVal = getDfltParam()
 
     log_path = dfltVal[5]
-    logFile = log_path + '/SendMailACFreedown.log'
+    logFile = log_path + '/CRM2SSMUnitTransfers.log'
 
-    APPNAME='SendMailACFreedown'
+    APPNAME='CRM2SSMUnitTransfer'
     IPADDR=get_ipaddr()
     FORMAT="%(asctime)-5s {} {}: [%(levelname)-8s] >> %(message)s".format(IPADDR, APPNAME)
 
