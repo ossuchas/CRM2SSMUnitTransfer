@@ -169,7 +169,7 @@ SELECT a.ProductID,
        a.Project,
        a.ProjectType,
        a.UnitAmount AS TotalUnit,
-       --a.BookAmount, 
+       --a.BookAmount,
 	   ISNULL(b.TotalUnit,0) TransferTotalUnit
 FROM
 (
@@ -195,7 +195,6 @@ FROM
           AND RTPExcusive = '1'
 ) AS a LEFT JOIN #temp1 b ON a.ProductID = b.ProductID
 WHERE a.UnitAmount <> 0
-      --AND a.UnitAmount <> a.BookAmount
 ORDER BY a.ProductID;
     """
 
@@ -207,6 +206,7 @@ ORDER BY a.ProductID;
     logging.info("File Name => {}".format(full_file_name))
 
     df = pd.read_sql(sql=str_sql, con=db)
+    print(df)
 
     # Read by SQL Statement
     logging.info("<<<Before Read SQL to Excel File>>>")
