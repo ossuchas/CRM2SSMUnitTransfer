@@ -187,7 +187,7 @@ if __name__ == '__main__':
     dfltVal = getDfltParam()
 
     log_path = dfltVal[5]
-    logFile = log_path + '/CRM2SSMUnitTransfers.log'
+    logFile = log_path + '/CRM2SSMUnitTransfer.log'
 
     APPNAME='CRM2SSMUnitTransfer'
     IPADDR=get_ipaddr()
