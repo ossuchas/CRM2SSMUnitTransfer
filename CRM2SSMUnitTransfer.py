@@ -145,14 +145,13 @@ def main(dfltVal):
     db = create_engine('mssql+pyodbc:///?odbc_connect=%s' % params, fast_executemany=True)
 
     str_sql = """
-    IF (OBJECT_ID('tempdb..#temp1') IS NOT NULL)
-    DROP TABLE #temp1;
-
-SELECT DISTINCT
-    P.ProductID,
-    P.ProjectType,
-    COUNT(*) AS TotalUnit
-	INTO #temp1
+    SELECT a.ProductID,
+       a.SAPProductID,
+       a.Project,
+       a.ProjectType,
+       a.UnitAmount AS TotalUnit,
+	   (
+	   SELECT COUNT(*)
 FROM [dbo].[ICON_EntForms_Transfer] TR
     LEFT JOIN [dbo].[ICON_EntForms_Agreement] Arg
         ON Arg.ContractNumber = TR.ContractNumber
@@ -161,16 +160,8 @@ FROM [dbo].[ICON_EntForms_Transfer] TR
 WHERE 1 = 1
       AND TR.TransferDateApprove IS NOT NULL
       AND P.RTPExcusive = '1'
-GROUP BY P.ProductID,
-         P.ProjectType;
-
-SELECT a.ProductID,
-       a.SAPProductID,
-       a.Project,
-       a.ProjectType,
-       a.UnitAmount AS TotalUnit,
-       --a.BookAmount, 
-	   ISNULL(b.TotalUnit,0) TransferTotalUnit
+	  AND P.ProductID = a.ProductID
+	  )  AS TransferTotalUnit
 FROM
 (
     SELECT ProductID,
@@ -193,9 +184,8 @@ FROM
     FROM dbo.ICON_EntForms_Products P
     WHERE Producttype IN ( 'โครงการแนวราบ', 'โครงการแนวสูง' )
           AND RTPExcusive = '1'
-) AS a LEFT JOIN #temp1 b ON a.ProductID = b.ProductID
+) AS a
 WHERE a.UnitAmount <> 0
-      --AND a.UnitAmount <> a.BookAmount
 ORDER BY a.ProductID;
     """
 
@@ -207,6 +197,7 @@ ORDER BY a.ProductID;
     logging.info("File Name => {}".format(full_file_name))
 
     df = pd.read_sql(sql=str_sql, con=db)
+
 
     # Read by SQL Statement
     logging.info("<<<Before Read SQL to Excel File>>>")
