@@ -212,9 +212,8 @@ ORDER BY a.ProductID;
     logging.info("Send Mail Start")
     sender = 'no-reply@apthai.com'
     receivers = dfltVal[1].split(';')
-    # receivers = ['suchat_s@apthai.com']
 
-    subject = "{} ({})".format(dfltVal[2], tx_last_month)
+    subject = "{} ({})".format(dfltVal[2], datetime.now().strftime("%d/%m/%Y"))
     bodyMsg_tmp = dfltVal[3].replace("PERIOD_MONTH", tx_last_month)
     bodyMsg = "{}{}".format(bodyMsg_tmp, dfltVal[4])
 
