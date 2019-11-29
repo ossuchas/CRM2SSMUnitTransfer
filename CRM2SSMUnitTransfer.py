@@ -206,15 +206,13 @@ ORDER BY a.ProductID;
     # Prepare Send Mail
     last_month = datetime.now() - relativedelta(months=1)
     tx_last_month = format(last_month, '%B %Y')
-    # first_last_month = datetime.now().replace(day=1) - relativedelta(months=1)
-    # yesterday = format(datetime.now() - timedelta(days=1), '%Y%m%d')
 
     logging.info("Send Mail Start")
     sender = 'no-reply@apthai.com'
     receivers = dfltVal[1].split(';')
 
     subject = "{} ({})".format(dfltVal[2], datetime.now().strftime("%d/%m/%Y"))
-    bodyMsg_tmp = dfltVal[3].replace("PERIOD_MONTH", tx_last_month)
+    bodyMsg_tmp = dfltVal[3].replace("PERIOD_MONTH", datetime.now().strftime("%d/%m/%Y"))
     bodyMsg = "{}{}".format(bodyMsg_tmp, dfltVal[4])
 
     attachedFile = [full_file_name]
