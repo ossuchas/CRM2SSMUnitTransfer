@@ -197,8 +197,6 @@ ORDER BY a.ProductID;
     logging.info("File Name => {}".format(full_file_name))
 
     df = pd.read_sql(sql=str_sql, con=db)
-    print(df)
-
 
     # Read by SQL Statement
     logging.info("<<<Before Read SQL to Excel File>>>")
