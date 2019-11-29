@@ -145,6 +145,58 @@ def main(dfltVal):
     db = create_engine('mssql+pyodbc:///?odbc_connect=%s' % params, fast_executemany=True)
 
     str_sql = """
+    IF (OBJECT_ID('tempdb..#temp1') IS NOT NULL)
+    DROP TABLE #temp1;
+
+SELECT DISTINCT
+    P.ProductID,
+    P.ProjectType,
+    COUNT(*) AS TotalUnit
+	INTO #temp1
+FROM [dbo].[ICON_EntForms_Transfer] TR
+    LEFT JOIN [dbo].[ICON_EntForms_Agreement] Arg
+        ON Arg.ContractNumber = TR.ContractNumber
+    LEFT JOIN [dbo].[ICON_EntForms_Products] P
+        ON P.ProductID = Arg.ProductID
+WHERE 1 = 1
+      AND TR.TransferDateApprove IS NOT NULL
+      AND P.RTPExcusive = '1'
+GROUP BY P.ProductID,
+         P.ProjectType;
+
+SELECT a.ProductID,
+       a.SAPProductID,
+       a.Project,
+       a.ProjectType,
+       a.UnitAmount AS TotalUnit,
+       --a.BookAmount, 
+	   ISNULL(b.TotalUnit,0) TransferTotalUnit
+FROM
+(
+    SELECT ProductID,
+           Project,
+           P.ProjectType,
+           P.SAPProductID,
+           (
+               SELECT COUNT(*)
+               FROM dbo.ICON_EntForms_Unit
+               WHERE ProductID = P.ProductID
+                     AND ISNULL(AssetType, 0) <> 4
+                     AND ISNULL(AssetType, 0) <> 5
+           ) AS UnitAmount,
+           (
+               SELECT COUNT(*)
+               FROM dbo.ICON_EntForms_Booking
+               WHERE ProductID = P.ProductID
+                     AND CancelDate IS NULL
+           ) AS BookAmount
+    FROM dbo.ICON_EntForms_Products P
+    WHERE Producttype IN ( 'โครงการแนวราบ', 'โครงการแนวสูง' )
+          AND RTPExcusive = '1'
+) AS a LEFT JOIN #temp1 b ON a.ProductID = b.ProductID
+WHERE a.UnitAmount <> 0
+      --AND a.UnitAmount <> a.BookAmount
+ORDER BY a.ProductID;
     """
 
     # Setup Format File Name CSV
