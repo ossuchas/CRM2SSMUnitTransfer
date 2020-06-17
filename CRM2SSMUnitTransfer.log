@@ -1,0 +1,20 @@
+2020-06-17 19:01:51 192.168.31.243 CRM2SSMUnitTransfer: [DEBUG   ] >> #####################
+2020-06-17 19:01:51 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> Start Process
+2020-06-17 19:01:51 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> File Name => CRM2SSMUNITTRANS20200617T190151.xlsx
+2020-06-17 19:01:54 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> <<<Before Read SQL to Excel File>>>
+2020-06-17 19:01:54 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> <<<After Read SQL to Excel File>>>
+2020-06-17 19:01:54 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> Send Mail Start
+2020-06-17 19:01:55 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> Successfully sent email
+2020-06-17 19:01:55 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> Delete Execl File
+2020-06-17 19:01:55 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> End Process
+2020-06-17 19:01:55 192.168.31.243 CRM2SSMUnitTransfer: [DEBUG   ] >> #####################
+2020-06-17 19:25:42 192.168.31.243 CRM2SSMUnitTransfer: [DEBUG   ] >> #####################
+2020-06-17 19:25:42 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> Start Process
+2020-06-17 19:25:42 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> File Name => CRM2SSMUNITTRANS20200617T192542.xlsx
+2020-06-17 19:25:46 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> <<<Before Read SQL to Excel File>>>
+2020-06-17 19:25:46 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> <<<After Read SQL to Excel File>>>
+2020-06-17 19:25:46 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> Send Mail Start
+2020-06-17 19:25:47 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> Successfully sent email
+2020-06-17 19:25:47 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> Delete Execl File
+2020-06-17 19:25:47 192.168.31.243 CRM2SSMUnitTransfer: [INFO    ] >> End Process
+2020-06-17 19:25:47 192.168.31.243 CRM2SSMUnitTransfer: [DEBUG   ] >> #####################

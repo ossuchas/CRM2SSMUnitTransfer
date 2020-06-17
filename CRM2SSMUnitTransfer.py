@@ -145,17 +145,17 @@ def main(dfltVal):
     db = create_engine('mssql+pyodbc:///?odbc_connect=%s' % params, fast_executemany=True)
 
     str_sql = """
-    SELECT a.ProductID,
+     SELECT a.ProductID,
        a.SAPProductID,
        a.Project,
        a.ProjectType,
        a.UnitAmount AS TotalUnit,
 	   (
 	   SELECT COUNT(*)
-FROM [dbo].[ICON_EntForms_Transfer] TR
-    LEFT JOIN [dbo].[ICON_EntForms_Agreement] Arg
+FROM [dbo].[ICON_EntForms_Transfer] TR WITH(NOLOCK)
+    LEFT JOIN [dbo].[ICON_EntForms_Agreement] Arg WITH(NOLOCK)
         ON Arg.ContractNumber = TR.ContractNumber
-    LEFT JOIN [dbo].[ICON_EntForms_Products] P
+    LEFT JOIN [dbo].[ICON_EntForms_Products] P WITH(NOLOCK)
         ON P.ProductID = Arg.ProductID
 WHERE 1 = 1
       AND TR.TransferDateApprove IS NOT NULL
@@ -170,22 +170,24 @@ FROM
            P.SAPProductID,
            (
                SELECT COUNT(*)
-               FROM dbo.ICON_EntForms_Unit
+               FROM dbo.ICON_EntForms_Unit WITH(NOLOCK)
                WHERE ProductID = P.ProductID
                      AND ISNULL(AssetType, 0) <> 4
                      AND ISNULL(AssetType, 0) <> 5
+					 AND ModelID <> 'MIGRATE-LB'
            ) AS UnitAmount,
            (
                SELECT COUNT(*)
-               FROM dbo.ICON_EntForms_Booking
+               FROM dbo.ICON_EntForms_Booking WITH(NOLOCK)
                WHERE ProductID = P.ProductID
                      AND CancelDate IS NULL
            ) AS BookAmount
-    FROM dbo.ICON_EntForms_Products P
+    FROM dbo.ICON_EntForms_Products P WITH(NOLOCK)
     WHERE Producttype IN ( 'โครงการแนวราบ', 'โครงการแนวสูง' )
           AND RTPExcusive = '1'
 ) AS a
-WHERE a.UnitAmount <> 0
+WHERE 1=1
+AND a.UnitAmount <> 0
 ORDER BY a.ProductID;
     """
 
@@ -210,6 +212,7 @@ ORDER BY a.ProductID;
     logging.info("Send Mail Start")
     sender = 'no-reply@apthai.com'
     receivers = dfltVal[1].split(';')
+    # receivers = ["suchat_s@apthai.com"]
 
     subject = "{} ({})".format(dfltVal[2], datetime.now().strftime("%d/%m/%Y"))
     bodyMsg_tmp = dfltVal[3].replace("PERIOD_MONTH", datetime.now().strftime("%d/%m/%Y"))
@@ -226,6 +229,7 @@ if __name__ == '__main__':
     dfltVal = getDfltParam()
 
     log_path = dfltVal[5]
+    # log_path = "."
     logFile = log_path + '/CRM2SSMUnitTransfer.log'
 
     APPNAME='CRM2SSMUnitTransfer'
